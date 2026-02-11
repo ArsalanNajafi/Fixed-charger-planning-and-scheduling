@@ -127,8 +127,6 @@ def build_masterOnlyFC(s, parking_data, parking_to_bus, SampPerH, Ch_cost, robot
         return sum(modelFC.assign[k, i] for i in modelFC.I) <= 1
     modelFC.ConSingleAssign = pyo.Constraint(modelFC.K,  rule=SingleChargerAssignment)
     
-
-
     def occupancy_limit(modelFC, i, t):
             """Occupancy cannot exceed 1"""
             return modelFC.occupancy[i, t] <= 1       
@@ -148,8 +146,6 @@ def build_masterOnlyFC(s, parking_data, parking_to_bus, SampPerH, Ch_cost, robot
         modelFC.I, rule=charger_installation
     )
 
-
-
     def simplified_power_constraint(modelFC, k, t):
         """Simplified linear power constraint"""
         at = EVdata['AT'][k]
@@ -162,9 +158,7 @@ def build_masterOnlyFC(s, parking_data, parking_to_bus, SampPerH, Ch_cost, robot
         total_assignment = sum(modelFC.assign[k, i] for i in modelFC.I)
         return modelFC.P_ch_EV[k, t] <= ChargerCap * total_assignment
     modelFC.ConSimplePower = pyo.Constraint(modelFC.K, modelFC.T, rule=simplified_power_constraint)
-
-
-    
+   
     def charger_occupancy_new(modelFC, k, i):
             """If EV k is assigned to charger i, then charger must be occupied during EV's stay"""
             at = EVdata['AT'][k]
@@ -254,8 +248,7 @@ def build_masterOnlyFC(s, parking_data, parking_to_bus, SampPerH, Ch_cost, robot
     modelFC.obj = pyo.Objective(expr= (PFV_Charger * modelFC.Ns * Ch_cost) +
     (1/SampPerH)*sum(Price.iloc[t - 1] * (0.001) * modelFC.P_btot[t] for t in modelFC.T) +
     (1 / 30) * PeakPrice *modelFC.PeakPower + (modelFC.Alpha) , sense=pyo.minimize)
-    
-    
+        
     modelFC.cuts = pyo.ConstraintList()      
    
     ### creating x indexed to 3 sets again
@@ -274,8 +267,6 @@ def build_masterOnlyFC(s, parking_data, parking_to_bus, SampPerH, Ch_cost, robot
         modelFC.x[k, i, t] = modelFC.assign[k, i] * modelFC.occupancy[i, t]
     
     print(f"Created x expression with {len(x_indices)} entries")
-        
-    
-    
-    
+          
+
     return modelFC
