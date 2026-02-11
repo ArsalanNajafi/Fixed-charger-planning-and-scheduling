@@ -2,3 +2,4 @@ The optimization model is handled through Benders decomposition. The planning an
 The main loop of the Benders is in the main file.
 The other files come to the main file through functions.
 The Excel files are the input to the model, including the arrival and departure times of EVs and the input to the power flow.
+To run, use the file named as "Main_Script_To_Run". The other files are linked to the main file as functions.
