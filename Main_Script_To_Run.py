@@ -14,12 +14,10 @@ import seaborn as sns
 from build_master import build_masterOnlyFC
 from GlobalData import GlobalData
 
-
 [parking_to_bus, ChargerCap, SampPerH, Vmin, Ch_cost, nChmax, PgridMax, 
   NYearCh, NYearRob, RobotTypes, robotCC, IR, DCchargerCap, PeakPrice, MaxRobot, NevSame] = GlobalData()
 
- 
-# Initialize parameters
+ # Initialize parameters
 ParkNo = len(parking_to_bus)
 sb = 10  # Base MVA
 
@@ -32,7 +30,6 @@ results = {
     'P_btot': {}, 'P_b_EV': {}, 'x': {}, 'z': {}, 'assign': {}, 
     'Ns': {}, 'P_ch_EV': {}, 'PeakPower': {}, 'Alpha': {}
 }
-
 
 P_btot_Parkings = {}  # Format: {(s,t): value}, I just add 'f' to the end of the variables to give the name to the dic formats
 P_b_EVf = {}
@@ -55,8 +52,6 @@ Pattern = pd.read_excel(file_path, sheet_name='DemandPattern')
 Pattern = np.repeat(Pattern['Pattern'], SampPerH)
 Price = np.repeat(Price['Price'], SampPerH)
  
-
-
 # Models for each parking
 parking_models = {}
 for s in range(1, ParkNo+1):
@@ -90,12 +85,10 @@ while True:
         # Store results
         for t in model.T:
             P_btot_current[(s,t)] = pyo.value(model.P_btot[t])
-        
         print(f"Parking {s} Alpha: {pyo.value(model.Alpha):.2f}")
         
         for t in model.T:
             P_btot_Parkings[(s, t)] = pyo.value(model.P_btot[t])
-
 
         P_b_EVf.update({
             (k,i,s,t): pyo.value(model.P_b_EV[k,i,t]) 
@@ -114,8 +107,7 @@ while True:
         for k in model.K:
             for i in model.I:
                 assignf[(k,i,s)] = pyo.value(model.assign[k, i])
-        
-                       
+                        
         Nsf[(s)] = pyo.value(model.Ns)
  
         for k in model.K:
@@ -164,7 +156,6 @@ while True:
         print("\n*** All voltages feasible - convergence achieved! ***")
         break
      
-
 ################### Visualization  ########################
 Ncharger_val = {(s): Nsf[s] for s in range(1, ParkNo+1)}
 print(Ncharger_val)
@@ -326,4 +317,5 @@ MyresultsMM_FC = {
 import pickle
 
 with open('pyomo_resultsMM.pkl', 'wb') as f:
+
     pickle.dump(MyresultsMM_FC, f)
